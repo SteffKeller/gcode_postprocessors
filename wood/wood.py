@@ -36,12 +36,9 @@ import getopt
 # Note that it should still be viewed by Cura as a regular plugin by the way!
 # More info on http://www.tridimake.com/2013/02/how-tun-run-python-cura-plugin-without.html
 #
-# To run it you need Python, then simply run it like
-#   wood_standalone.py --min minTemp --max maxTemp --grain grainSize --file gcodeFile
+# To run it you need Python 3, then simply run it like
+#   python wood.py --min minTemp --max maxTemp --grain grainSize --file gcodeFile
 # It will "patch" your gcode file with the appropriate M104 temperature change.
-#
-
-# TODO: support  UTF8 for both python3 and 2, e.g. open(filename, "r", encoding="utf_8")
 
 def plugin_standalone_usage(myName):
     print("Usage:")
@@ -124,7 +121,7 @@ def get_value(gcode_line, key, default=None):
         return default
     try:
         return float(m.group(0))
-    except:
+    except (ValueError, AttributeError):
         return default
 
 
@@ -138,12 +135,6 @@ def get_z(line, default=None):
         return default
 
 
-try:
-    xrange  # python 2.7 vs 3 compatibility
-except NameError:
-    xrange = range
-
-
 class Perlin:
     # Perlin noise: http://mrl.nyu.edu/~perlin/noise/
 
@@ -152,10 +143,10 @@ class Perlin:
         self.perm = [None] * 2 * tile_dimension
 
         permutation = []
-        for value in xrange(tile_dimension): permutation.append(value)
+        for value in range(tile_dimension): permutation.append(value)
         random.shuffle(permutation)
 
-        for i in xrange(tile_dimension):
+        for i in range(tile_dimension):
             self.perm[i] = permutation[i]
             self.perm[tile_dimension + i] = self.perm[i]
 
@@ -224,7 +215,7 @@ class Perlin:
         value = 0.0
         amplitude = 1.0
         total_amplitude = 0.0
-        for octave in xrange(octaves):
+        for octave in range(octaves):
             n = self.noise(x * frequency, y * frequency, z * frequency)
             value += amplitude * n
             total_amplitude += amplitude
@@ -233,7 +224,7 @@ class Perlin:
         return value / total_amplitude
 
 
-with open(filename, "r") as f:
+with open(filename, "r", encoding="utf-8") as f:
     lines = f.readlines()
 
 
@@ -313,7 +304,7 @@ def z_hop_scan_ahead(index, z):
 #
 # Now save the file with the patched M104 temperature settings
 #
-with open(filename, "w") as f:
+with open(filename, "w", encoding="utf-8") as f:
     # Prepare a transposed ASCII-art temperature graph for the end of the file
 
     f.write(";woodified gcode, see graph at the end - jeremie.francois@gmail.com - generated on " +

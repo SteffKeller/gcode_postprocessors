@@ -17,14 +17,6 @@ from UM.Qt.QtApplication import QtApplication  # Check if cura has closed
 # ------------------------------------
 
 
-# Python 2.7 vs 3 compatibility
-try:
-    xrange
-except NameError:
-    xrange = range
-
-
-
 # Main Class - Imported by Cura
 # ==============================
 class Woodgrain_Cura(Script):
@@ -43,10 +35,10 @@ class Woodgrain_Cura(Script):
             self.perm = [None] * 2 * tile_dimension
 
             permutation = []
-            for value in xrange(tile_dimension): permutation.append(value)
+            for value in range(tile_dimension): permutation.append(value)
             random.shuffle(permutation)
 
-            for i in xrange(tile_dimension):
+            for i in range(tile_dimension):
                 self.perm[i] = permutation[i]
                 self.perm[tile_dimension + i] = self.perm[i]
 
@@ -115,7 +107,7 @@ class Woodgrain_Cura(Script):
             value = 0.0
             amplitude = 1.0
             total_amplitude = 0.0
-            for octave in xrange(octaves):
+            for octave in range(octaves):
                 n = self.noise(x * frequency, y * frequency, z * frequency)
                 value += amplitude * n
                 total_amplitude += amplitude
@@ -333,7 +325,7 @@ class Woodgrain_Cura(Script):
                 return default
             try:
                 return float(m.group(0))
-            except:
+            except (ValueError, AttributeError):
                 return default
 
 

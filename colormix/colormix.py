@@ -21,8 +21,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 # ########### BEGIN CURA PLUGIN STAND-ALONIFICATION ############
 # More info on http://www.tridimake.com/2013/02/how-tun-run-python-cura-plugin-without.html
 #
-# To run it you need Python, then simply run it like
-#   mixing.py --file gcodeFile
+# To run it you need Python 3, then simply run it like
+#   python colormix.py --file gcodeFile
 #   mixing.py --toolCount 15 --file gcodeFile
 # It will "patch" your gcode file with the appropriate Tn tool changes (15 by default)
 #
@@ -137,7 +137,7 @@ def mix_cycle(normalizedIndex, speed, offsetDegree):
     return int(math.floor(100 * amplitude))
 
 
-file_out = open(filename, "w")
+file_out = open(filename, "w", encoding="utf-8")
 with file_out as f:
     f.write(";mixing : ")
     if mixCount == 0:
