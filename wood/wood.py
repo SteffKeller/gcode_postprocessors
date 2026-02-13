@@ -58,7 +58,7 @@ except NameError:
     # Then we are called from the command line (not from cura)
     # trying len(inspect.stack()) > 2 would be less secure btw
     opts, extraparams = getopt.getopt(sys.argv[1:], 'i:a:t:g:u:d:r:s:z:k:c:f:w:h',
-                                      ['min=', 'max=', 'first-temp=', 'grain=', 'max-upward=', 'max-downward=', 'random-seed=',
+                                      ['min=', 'max=', 'firstTemp=', 'grain=', 'max-upward=', 'max-downward=', 'random-seed=',
                                        'spikiness-power=', 'z-offset=', 'skip-start-z=', 'scan-for-z-hop=', 'temp-command', 'file=', 'help'])
     minTemp = 190
     maxTemp = 240
@@ -224,7 +224,7 @@ class Perlin:
         return value / total_amplitude
 
 
-with open(filename, "r", encoding="utf-8") as f:
+with open(filename, "r", encoding="latin-1") as f:
     lines = f.readlines()
 
 
@@ -279,8 +279,14 @@ for line in lines:
 # normalize built noises
 noisesMax = noises[max(noises, key=noises.get)]
 noisesMin = noises[min(noises, key=noises.get)]
-for z, v in noises.items():
-    noises[z] = (noises[z] - noisesMin) / (noisesMax - noisesMin)
+noiseRange = noisesMax - noisesMin
+if noiseRange > 0:
+    for z, v in noises.items():
+        noises[z] = (noises[z] - noisesMin) / noiseRange
+else:
+    # All noise values are the same, just use 0.5 (middle of range)
+    for z in noises.keys():
+        noises[z] = 0.5
 
 
 def noise_to_temp(noise):
@@ -304,7 +310,7 @@ def z_hop_scan_ahead(index, z):
 #
 # Now save the file with the patched M104 temperature settings
 #
-with open(filename, "w", encoding="utf-8") as f:
+with open(filename, "w", encoding="latin-1") as f:
     # Prepare a transposed ASCII-art temperature graph for the end of the file
 
     f.write(";woodified gcode, see graph at the end - jeremie.francois@gmail.com - generated on " +

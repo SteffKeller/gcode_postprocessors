@@ -137,7 +137,7 @@ def mix_cycle(normalizedIndex, speed, offsetDegree):
     return int(math.floor(100 * amplitude))
 
 
-file_out = open(filename, "w", encoding="utf-8")
+file_out = open(filename, "w", encoding="latin-1")
 with file_out as f:
     f.write(";mixing : ")
     if mixCount == 0:
