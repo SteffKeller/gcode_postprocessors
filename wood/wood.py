@@ -116,7 +116,7 @@ def get_value(gcode_line, key, default=None):
     if not key in gcode_line or (';' in gcode_line and gcode_line.find(key) > gcode_line.find(';')):
         return default
     sub_part = gcode_line[gcode_line.find(key) + 1:]
-    m = re.search('^[0-9]+\.?[0-9]*', sub_part)
+    m = re.search(r'^[0-9]+\.?[0-9]*', sub_part)
     if m is None:
         return default
     try:
